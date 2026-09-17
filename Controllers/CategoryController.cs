@@ -3,30 +3,33 @@ using FinSteady_API.Models;
 using FinSteady_API.Models.Request;
 using FinSteady_API.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace FinSteady_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SavingGoalController : ControllerBase
+    public class CategoryController : ControllerBase
     {
-        private readonly ISavingGoalRepository _savingGoalRepository;
+        private readonly ICategoryRepository _categoryRepository;
         protected APIResponse _response;
 
-        public SavingGoalController(ISavingGoalRepository savingGoalRepository)
+        public CategoryController(ICategoryRepository categoryRepository)
         {
-            _savingGoalRepository = savingGoalRepository;
-            _response = new();
+            _categoryRepository = categoryRepository;
+            _response = new APIResponse();
         }
 
-        [HttpGet("{id:int}", Name = "GetSavingGoal")]
+        [HttpGet("{id:int}", Name = "GetCategory")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetSavingGoal(int id)
+        public async Task<ActionResult<APIResponse>> GetCategory(int id)
         {
             try
             {
@@ -35,13 +38,13 @@ namespace FinSteady_API.Controllers
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                var savingGoal = await _savingGoalRepository.GetSavingGoalById(id);
-                if (savingGoal == null)
+                var category = await _categoryRepository.GetCategoryById(id);
+                if (category == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
                 }
-                _response.Result = savingGoal;
+                _response.Result = category;
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -57,12 +60,12 @@ namespace FinSteady_API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetSavingGoals()
+        public async Task<ActionResult<APIResponse>> GetCategories()
         {
             try
             {
-                IEnumerable<SavingGoal> savingGoalList = await _savingGoalRepository.GetSavingGoals();
-                _response.Result = savingGoalList;
+                IEnumerable<Category> categoryList = await _categoryRepository.GetCategories();
+                _response.Result = categoryList;
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -74,13 +77,13 @@ namespace FinSteady_API.Controllers
             return _response;
         }
 
-        [HttpDelete("{id:int}", Name = "DeleteSavingGoal")]
+        [HttpDelete("{id:int}", Name = "DeleteCategory")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> DeleteSavingGoal(int id)
+        public async Task<ActionResult<APIResponse>> DeleteCategory(int id)
         {
             try
             {
@@ -88,12 +91,12 @@ namespace FinSteady_API.Controllers
                 {
                     return BadRequest();
                 }
-                var savingGoal = await _savingGoalRepository.GetSavingGoalById(id);
-                if (savingGoal == null)
+                var category = await _categoryRepository.GetCategoryById(id);
+                if (category == null)
                 {
                     return NotFound();
                 }
-                await _savingGoalRepository.DeleteSavingGoal(savingGoal);
+                await _categoryRepository.DeleteCategory(category);
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -106,10 +109,10 @@ namespace FinSteady_API.Controllers
             return _response;
         }
 
-        [HttpPut("{id:int}", Name = "UpdateSavingGoal")]
+        [HttpPut("{id:int}", Name = "UpdateCategory")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> UpdateSavingGoal(int id, [FromBody] SavingGoalRequestModel updateDTO)
+        public async Task<ActionResult<APIResponse>> UpdateCategory(int id, [FromBody] CategoryRequestModel updateDTO)
         {
             try
             {
@@ -117,10 +120,10 @@ namespace FinSteady_API.Controllers
                 {
                     return BadRequest();
                 }
-                SavingGoal dbSavingGoal = await _savingGoalRepository.GetSavingGoalById(id);
-                SavingGoal model = updateDTO.ToEntity();
+                Category dbCategory = await _categoryRepository.GetCategoryById(id);
+                Category model = updateDTO.ToEntity();
 
-                await _savingGoalRepository.UpdateSavingGoal(dbSavingGoal, model);
+                await _categoryRepository.UpdateCategory(dbCategory, model);
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -134,11 +137,11 @@ namespace FinSteady_API.Controllers
             return _response;
         }
 
-        [HttpPost("createSavingGoal")]
+        [HttpPost("createCategory")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> CreateSavingGoal([FromBody] SavingGoalRequestModel createDTO)
+        public async Task<ActionResult<APIResponse>> CreateCategory([FromBody] CategoryRequestModel createDTO)
         {
             try
             {
@@ -152,12 +155,12 @@ namespace FinSteady_API.Controllers
                     return BadRequest(createDTO);
                 }
 
-                SavingGoal savingGoal = createDTO.ToEntity();
+                Category category = createDTO.ToEntity();
 
-                savingGoal = await _savingGoalRepository.AddSavingGoal(savingGoal);
-                _response.Result = savingGoal;
+                category = await _categoryRepository.AddCategory(category);
+                _response.Result = category;
                 _response.StatusCode = HttpStatusCode.Created;
-                return CreatedAtRoute("GetSavingGoal", new { id = savingGoal.GoalId }, _response);
+                return CreatedAtRoute("GetCategory", new { id = category.CategoryId }, _response);
             }
             catch (Exception ex)
             {
