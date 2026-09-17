@@ -15,12 +15,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<SmartSaverDatabaseContext>(option =>
 {
-    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    //option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     // option.UseSqlServer("Data Source=AJ; Initial Catalog=SmartSaverDatabase; Trusted_Connection=True; TrustServerCertificate=True;");
-
+    option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddEntityFrameworkSqlServer();
+//builder.Services.AddEntityFrameworkSqlServer();
+builder.Services.AddEntityFrameworkNpgsql();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 // Load configuration settings from appsettings.json
