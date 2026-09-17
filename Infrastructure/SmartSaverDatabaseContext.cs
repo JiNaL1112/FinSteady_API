@@ -27,7 +27,7 @@ public partial class SmartSaverDatabaseContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=AJ;Database=SmartSaverDatabase;TrustServerCertificate=True;Trusted_Connection=True;MultipleActiveResultSets=true");
+        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=SmartSaverDatabase;Username=postgres;Password=Jinal@1967");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -39,13 +39,13 @@ public partial class SmartSaverDatabaseContext : DbContext
 
             entity.Property(e => e.AvailableBalance).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
             entity.Property(e => e.SavingBalance).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.TotalBalance).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
 
             entity.HasOne(d => d.User).WithMany(p => p.Cards)
                 .HasForeignKey(d => d.UserId)
@@ -59,12 +59,12 @@ public partial class SmartSaverDatabaseContext : DbContext
             entity.ToTable("Category");
 
             entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
         });
 
         modelBuilder.Entity<SavingGoal>(entity =>
@@ -76,14 +76,14 @@ public partial class SmartSaverDatabaseContext : DbContext
             entity.HasIndex(e => e.TargetDate, "idx_Saving_Goal_TargetDate");
 
             entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
             entity.Property(e => e.FundBalance).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.TargetAmount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
 
             entity.HasOne(d => d.Category).WithMany(p => p.SavingGoals)
                 .HasForeignKey(d => d.CategoryId)
@@ -105,14 +105,14 @@ public partial class SmartSaverDatabaseContext : DbContext
             entity.ToTable("Saving_Rule");
 
             entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
             entity.Property(e => e.Rulename)
                 .HasMaxLength(255)
                 .HasColumnName("rulename");
             entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
         });
 
         modelBuilder.Entity<Transaction>(entity =>
@@ -125,13 +125,13 @@ public partial class SmartSaverDatabaseContext : DbContext
 
             entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.Date).HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
+            entity.Property(e => e.Date).HasColumnType("timestamp");
             entity.Property(e => e.TransactionType).HasMaxLength(50);
             entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
 
             entity.HasOne(d => d.FromUser).WithMany(p => p.TransactionFromUsers)
                 .HasForeignKey(d => d.FromUserId)
@@ -153,8 +153,8 @@ public partial class SmartSaverDatabaseContext : DbContext
             entity.HasIndex(e => e.Email, "idx_User_Email");
 
             entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.FirstName).HasMaxLength(50);
             entity.Property(e => e.Kycdoc).HasColumnName("KYCDoc");
@@ -165,8 +165,8 @@ public partial class SmartSaverDatabaseContext : DbContext
                 .HasMaxLength(50)
                 .HasDefaultValue("Active");
             entity.Property(e => e.UpdatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp");
         });
 
         OnModelCreatingPartial(modelBuilder);
