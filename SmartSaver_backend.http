@@ -1,0 +1,6 @@
+@SmartSaver_backend_HostAddress = http://localhost:5082
+
+GET {{SmartSaver_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
