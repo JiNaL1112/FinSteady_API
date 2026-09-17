@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinSteady_API.Migrations
 {
     [DbContext(typeof(SmartSaverDatabaseContext))]
-    [Migration("20260917193814_InitialCreate")]
+    [Migration("20260917200230_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
