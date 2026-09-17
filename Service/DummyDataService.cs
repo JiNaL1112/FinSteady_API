@@ -38,12 +38,15 @@ namespace FinSteady_API.Services
 
         public async Task EnsureAllDummyDataAsync()
         {
-            await EnsureDummyDataForTable<Card>(() => AddDummyCards());
-            await EnsureDummyDataForTable<Category>(() => AddDummyCategories());
-            await EnsureDummyDataForTable<SavingGoal>(() => AddDummySavingGoals());
-            await EnsureDummyDataForTable<SavingRule>(() => AddDummySavingRules());
-            await EnsureDummyDataForTable<Transaction>(() => AddDummyTransactions());
+            // Parent tables first — no FK dependencies
             await EnsureDummyDataForTable<User>(() => AddDummyUsers());
+            await EnsureDummyDataForTable<Category>(() => AddDummyCategories());
+            await EnsureDummyDataForTable<SavingRule>(() => AddDummySavingRules());
+
+            // Dependent tables — reference User/Category/SavingRule
+            await EnsureDummyDataForTable<Card>(() => AddDummyCards());
+            await EnsureDummyDataForTable<SavingGoal>(() => AddDummySavingGoals());
+            await EnsureDummyDataForTable<Transaction>(() => AddDummyTransactions());
         }
 
         private async Task EnsureDummyDataForTable<TEntity>(Func<Task> addDummyDataFunc) where TEntity : class
