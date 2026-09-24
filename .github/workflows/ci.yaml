@@ -1,20 +1,58 @@
-name: Hello CI
+name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-  workflow_dispatch:   # adds a "Run workflow" button
+    branches: [ main ]
+
+# Cancel older runs of the same branch/PR when a new commit is pushed
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  hello:
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4   # check the marketplace for the latest major version
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Say hello
-        run: echo "Hello from GitHub Actions!"
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Show what's in the repo
-        run: ls -la
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Restore
+        run: dotnet restore FinSteady_API.sln
+
+      - name: Build
+        run: dotnet build FinSteady_API.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test FinSteady_API.sln --configuration Release --no-build --verbosity normal
+
+      - name: Publish
+        if: github.event_name == 'push'
+        run: dotnet publish FinSteady_API.csproj --configuration Release --no-build --output ./publish
+
+      - name: Upload build artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: finsteady-api
+          path: ./publish
+          retention-days: 7
