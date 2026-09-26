@@ -20,9 +20,9 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 // Add services to the container.
 builder.Services.AddDbContext<SmartSaverDatabaseContext>(option =>
 {
-   // option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    // option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     // option.UseSqlServer("Data Source=AJ; Initial Catalog=SmartSaverDatabase; Trusted_Connection=True; TrustServerCertificate=True;");
-     option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 builder.Services.AddEntityFrameworkNpgsql();
