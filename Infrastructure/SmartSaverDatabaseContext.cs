@@ -25,7 +25,7 @@ public partial class SmartSaverDatabaseContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
