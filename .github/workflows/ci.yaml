@@ -85,13 +85,24 @@ jobs:
   # 4. Secret scanning
   # ---------------------------------------------------------------
   secret-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Gitleaks scan
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_CONFIG: .gitleaks.toml
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install Gitleaks
+      run: |
+        curl -sSfL -o gitleaks.tar.gz \
+          https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz
+        tar -xzf gitleaks.tar.gz gitleaks
+        chmod +x gitleaks
+
+    - name: Run Gitleaks (fail on findings)
+      run: |
+        ./gitleaks detect \
+          --source . \
+          --config .gitleaks.toml \
+          --verbose \
+          --redact \
+          --exit-code 1
