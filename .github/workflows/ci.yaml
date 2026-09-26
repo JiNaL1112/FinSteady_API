@@ -100,6 +100,7 @@ jobs:
         ./gitleaks detect \
           --source . \
           --config .github/gitleaks.toml \
+          --baseline-path .github/gitleaks-baseline.json \
           --verbose \
           --redact \
           --exit-code 1
