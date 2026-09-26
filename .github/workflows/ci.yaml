@@ -76,5 +76,5 @@ jobs:
         run: dotnet restore FinSteady_API.sln
 
       - name: Verify code formatting
-        run: dotnet format --check --verbosity diagnostic
+        run: dotnet format FinSteady_API.csproj --verify-no-changes --verbosity diagnostic
 
