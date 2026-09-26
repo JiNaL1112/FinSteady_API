@@ -130,22 +130,17 @@ jobs:
   # 6. Trivy — dependency + filesystem vulnerability scan
   # ---------------------------------------------------------------
   trivy-scan:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
       - uses: actions/checkout@v4
 
-      - name: Install Trivy
-        run: |
-          curl -sSfL -o trivy.tar.gz \
-            https://github.com/aquasecurity/trivy/releases/download/v0.58.1/trivy_0.58.1_Linux-64bit.tar.gz
-          tar -xzf trivy.tar.gz trivy
-          chmod +x trivy
-
-      - name: Scan filesystem for vulnerable dependencies
-        run: |
-          ./trivy fs . \
-            --scanners vuln \
-            --severity CRITICAL,HIGH \
-            --exit-code 1 \
-            --format table
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          scanners: 'vuln'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          format: 'table'
