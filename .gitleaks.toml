@@ -1,0 +1,14 @@
+[extend]
+useDefault = true
+
+[[rules]]
+id = "npgsql-connection-string-password"
+description = "Postgres/Npgsql connection string with inline password"
+regex = '''(?i)(Host|Server)\s*=\s*[^;]+;.*Password\s*=\s*[^;'"]+'''
+tags = ["connection-string", "database"]
+
+[[rules]]
+id = "generic-password-assignment"
+description = "Generic password= assignment, low entropy allowed"
+regex = '''(?i)password\s*[:=]\s*['"]?[A-Za-z0-9@#$%^&+=!]{6,}['"]?'''
+tags = ["password"]

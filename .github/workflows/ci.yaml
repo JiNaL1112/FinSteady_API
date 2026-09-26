@@ -50,7 +50,7 @@ jobs:
 
       - name: Publish
         if: github.event_name == 'push'
-        run: dotnet publish FinSteady_API.csproj --configuration Release --no-build --output ./publish
+        run: dotnet publish  ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./publish
 
       - name: Upload build artifact
         if: github.event_name == 'push'
@@ -79,7 +79,7 @@ jobs:
         run: dotnet restore FinSteady_API.sln
 
       - name: Verify code formatting
-        run: dotnet format FinSteady_API.csproj --verify-no-changes --verbosity diagnostic
+        run: dotnet format ${{ env.PROJECT_PATH }} --verify-no-changes --verbosity diagnostic
 
   # ---------------------------------------------------------------
   # 4. Secret scanning
@@ -93,4 +93,4 @@ jobs:
       - name: Gitleaks scan
         uses: gitleaks/gitleaks-action@v2
         env:
-          GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
