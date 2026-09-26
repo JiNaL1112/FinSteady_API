@@ -60,9 +60,7 @@ jobs:
           path: ./publish
           retention-days: 7
 
-  # ---------------------------------------------------------------
-  # 2. Formatting / static analysis
-  # ---------------------------------------------------------------
+
   lint:
     runs-on: ubuntu-latest
     needs: build
@@ -81,12 +79,10 @@ jobs:
       - name: Verify code formatting
         run: dotnet format ${{ env.PROJECT_PATH }} --verify-no-changes --verbosity diagnostic
 
-  # ---------------------------------------------------------------
-  # 4. Secret scanning
-  # ---------------------------------------------------------------
+
   secret-scan:
-  runs-on: ubuntu-latest
-  steps:
+    runs-on: ubuntu-latest
+    steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
