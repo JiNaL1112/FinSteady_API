@@ -7,10 +7,13 @@ on:
     branches: [ master ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 # Cancel older runs of the same branch/PR when a new commit is pushed
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress:  ${{ github.ref != 'refs/heads/master' }}
 
 env:
   DOTNET_VERSION: '8.0.x'
@@ -107,7 +110,7 @@ jobs:
 
 
   # ---------------------------------------------------------------
-  # 5. Dependency vulnerability scan
+  # Dependency vulnerability scan
   # ---------------------------------------------------------------
   dependency-scan:
     runs-on: ubuntu-latest
@@ -128,25 +131,28 @@ jobs:
           fi
 
   # ---------------------------------------------------------------
-  # 6. Trivy — dependency + filesystem vulnerability scan
+  # Trivy — dependency + filesystem vulnerability scan
   # ---------------------------------------------------------------
   trivy-scan:
       runs-on: ubuntu-latest
       needs: build
+      strategy:
+        matrix:
+          scanner : [ vuln, secret , misconfig]
       steps:
       - uses: actions/checkout@v4
 
       - name: Trivy vulnerability scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          scanners: 'vuln'
+          scan-type: fs
+          scan-ref:  .
+          scanners: ${{ matrix.scanner  }} 
           severity: 'CRITICAL,HIGH'
           exit-code: '1'
           format: 'table'
 
-  docker-scan:
+  docker-build-scan-push:
     runs-on: ubuntu-latest
     needs: [build, lint, secret-scan, dependency-scan, trivy-scan]
     if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/features/')
