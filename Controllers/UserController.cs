@@ -38,13 +38,13 @@ namespace FinSteady_API.Controllers
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                var villa = await UserRepository.GetUserById(id);
-                if (villa == null)
+                var user = await UserRepository.GetUserById(id);
+                if (user == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
                 }
-                _response.Result = villa;
+                _response.Result = user;
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
