@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: nuget-${{ runner.os }}-
 
       - name: Restore
@@ -48,6 +48,8 @@ jobs:
       - name: Build   (Release)
         run: dotnet build FinSteady_API.sln --configuration Release --no-restore
 
+
+      # todo: add code coverage step here, and upload to codecov.io  
       - name: Test
         run: dotnet test FinSteady_API.sln --configuration Release --no-build --verbosity normal
 
@@ -124,7 +126,7 @@ jobs:
         run: dotnet restore
       - name: Check for vulnerable packages
         run: |
-          dotnet list package --vulnerable --include-transitive 2>&1 | tee vuln-report.txt
+          dotnet list FinSteady_API.sln package --vulnerable --include-transitive 2>&1 | tee vuln-report.txt
           if grep -q "has the following vulnerable packages" vuln-report.txt; then
             echo "::error::Vulnerable NuGet packages detected."
             exit 1
