@@ -146,11 +146,7 @@ jobs:
           exit-code: '1'
           format: 'table'
 
-
-  # ---------------------------------------------------------------
-  # 7. Build Docker image and scan it for vulnerabilities
-  # ---------------------------------------------------------------
-    docker-scan:
+  docker-scan:
     runs-on: ubuntu-latest
     needs: [build, lint, secret-scan, dependency-scan, trivy-scan]
     if: github.ref == 'refs/heads/master'
@@ -182,7 +178,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Trivy image scan
-        uses: aquasecurity/trivy-action@<verified-version>
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE }}:scan
           format: sarif
