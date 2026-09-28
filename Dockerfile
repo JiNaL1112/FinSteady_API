@@ -43,6 +43,9 @@ WORKDIR /app
 
 COPY --from=publish /app/publish .
 
+
+USER app
+
 # ASP.NET Core 8's runtime images listen on 8080 by default for non-root
 # users (port 80 requires elevated privileges on Linux).
 ENV ASPNETCORE_URLS=http://+:8080
