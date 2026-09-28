@@ -7,12 +7,12 @@ namespace FinSteady_API.Repositories
 
     public class SavingGoalRepository : RepositoryBase<SavingGoal>, ISavingGoalRepository
     {
-        private readonly SmartSaverDatabaseContext calistaContext;
+        private readonly SmartSaverDatabaseContext smartSaverDatabaseContext;
 
         public SavingGoalRepository(SmartSaverDatabaseContext smartSaverDatabaseContext)
         : base(smartSaverDatabaseContext)
         {
-            this.calistaContext = calistaContext;
+            this.smartSaverDatabaseContext = smartSaverDatabaseContext;
         }
 
         public async Task<IEnumerable<SavingGoal>> GetSavingGoals()

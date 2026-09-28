@@ -12,3 +12,13 @@ id = "generic-password-assignment"
 description = "Generic password= assignment, low entropy allowed"
 regex = '''(?i)password\s*[:=]\s*['"]?[A-Za-z0-9@#$%^&+=!]{6,}['"]?'''
 tags = ["password"]
+
+
+[allowlist]
+description = "Test project, redacted placeholder and old baseline"
+regexTarget = "line"
+paths = [
+  '''FinSteady_API\.Tests/.*''',
+  '''\.github/gitleaks-baseline\.json$'''
+]
+regexes = ['''Password=REMOVED''']

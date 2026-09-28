@@ -7,12 +7,12 @@ namespace FinSteady_API.Repositories
 
     public class UserRepository : RepositoryBase<User>, IUserRepository
     {
-        private readonly SmartSaverDatabaseContext calistaContext;
+        private readonly SmartSaverDatabaseContext smartSaverDatabaseContext;
 
         public UserRepository(SmartSaverDatabaseContext smartSaverDatabaseContext)
         : base(smartSaverDatabaseContext)
         {
-            this.calistaContext = calistaContext;
+            this.smartSaverDatabaseContext = smartSaverDatabaseContext;
         }
 
         public async Task<IEnumerable<User>> GetUsers()
