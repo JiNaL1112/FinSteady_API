@@ -15,6 +15,10 @@ tags = ["password"]
 
 
 [allowlist]
+description = "Test project, redacted placeholder and old baseline"
+regexTarget = "line"
 paths = [
-  '''FinSteady_API\.Tests/.*'''
+  '''FinSteady_API\.Tests/.*''',
+  '''\.github/gitleaks-baseline\.json$'''
 ]
+regexes = ['''Password=REMOVED''']
